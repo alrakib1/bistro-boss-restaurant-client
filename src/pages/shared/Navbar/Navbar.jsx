@@ -1,7 +1,9 @@
 const Navbar = () => {
   const navOptions = (
     <>
-      <li>home</li>
+      <li className="pr-2">home</li>
+      <li className="pr-2">home</li>
+      <li className="pr-2">home</li>
     </>
   );
   return (
@@ -26,7 +28,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-black bg-opacity-30 w-20 space-y-5 hover:cursor-pointer text-center"
           >
             {navOptions}
           </ul>
