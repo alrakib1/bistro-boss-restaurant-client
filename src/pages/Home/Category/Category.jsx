@@ -23,9 +23,9 @@ const Category = () => {
         slidesPerView={4}
         spaceBetween={30}
         centeredSlides={true}
-        pagination={{
-          clickable: true,
-        }}
+        // pagination={{
+        //   clickable: true,
+        // }}
         modules={[Pagination, Autoplay]}
         autoplay={{delay:2000}}
         className="mySwiper mb-20"
