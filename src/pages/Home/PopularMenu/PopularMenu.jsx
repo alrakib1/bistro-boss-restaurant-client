@@ -1,7 +1,7 @@
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
 import useMenu from "../../../hooks/useMenu";
 import MenuCategory from "../../Menu/MenuCategory/MenuCategory";
-import MenuItem from "../../shared/MenuItem/MenuItem";
+
 
 const PopularMenu = () => {
   const [menu] = useMenu();
@@ -15,9 +15,9 @@ const PopularMenu = () => {
       ></SectionTitle>
      <MenuCategory items={popular}></MenuCategory>
       <div className="text-center mt-12">
-        <button className="btn btn-outline text-black border-0 border-b-4 mt-4">
+        {/* <button className="btn btn-outline text-black border-0 border-b-4 mt-4">
           View Full Menu
-        </button>
+        </button> */}
       </div>
     </section>
   );
