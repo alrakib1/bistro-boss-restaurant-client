@@ -1,17 +1,45 @@
-import { NavLink } from "react-router-dom";
-import "./Navbar.css"
 import { useContext } from "react";
+import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../Providers/AuthProvider";
+import "./Navbar.css";
+
+import { FaShoppingCart } from "react-icons/fa";
+import useCart from "../../../hooks/useCart";
+
 const Navbar = () => {
-  const {user,logOut} = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
+  const [cart] = useCart();
 
   const navOptions = (
     <>
-      <li ><NavLink to='/'>Home</NavLink></li>
-      <li ><NavLink to='/menu'>Menu</NavLink></li>
-      <li ><NavLink to='/order/salad'>Order Food</NavLink></li>
-      {user ? <><button onClick={()=>logOut()} className="btn-ghost">Logout</button></>  :<li ><NavLink to='/login'>Login</NavLink></li>}
-      
+      <li>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/menu">Menu</NavLink>
+      </li>
+      <li>
+        <NavLink to="/order/salad">Order Food</NavLink>
+      </li>
+      <li>
+        <NavLink to="/dashboard/cart">
+          <div className="flex gap-2 justify-center items-center  ">
+            <FaShoppingCart />
+            <div className="badge badge-secondary">{cart?.length}</div>
+          </div>
+        </NavLink>
+      </li>
+      {user ? (
+        <>
+          <button onClick={() => logOut()} className="btn-ghost">
+            Logout
+          </button>
+        </>
+      ) : (
+        <li>
+          <NavLink to="/login">Login</NavLink>
+        </li>
+      )}
     </>
   );
   return (
