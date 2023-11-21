@@ -3,12 +3,12 @@ import useAdmin from "../hooks/useAdmin";
 import useAuth from "../hooks/useAuth";
 
 const AdminRoute = ({ children }) => {
-  const [user, loading] = useAuth();
+  const {user, loading} = useAuth();
   const [isAdmin, isAdminLoading] = useAdmin();
 
   const location = useLocation();
   if (loading || isAdminLoading) {
-    return <p>loading</p>;
+    return <span className="loading loading-spinner min-h-screen flex justify-center items-center mx-auto loading-lg"></span>;
   }
   if (user && isAdmin) {
     return children;

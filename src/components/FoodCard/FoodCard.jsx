@@ -31,7 +31,7 @@ const FoodCard = ({ item }) => {
           Swal.fire({
             position: "top-center",
             icon: "success",
-            title: `${name} added to the cart`,
+            title: `${name} has been added to the cart`,
             showConfirmButton: false,
             timer: 1500,
           });
@@ -40,7 +40,6 @@ const FoodCard = ({ item }) => {
         }
       });
     } else {
-      //
       Swal.fire({
         title: "Your are not logged in!",
         text: "Please log in before add order to the cart",
@@ -60,8 +59,8 @@ const FoodCard = ({ item }) => {
 
   return (
     <div className="card mx-6 bg-base-100 shadow-xl">
-      <figure>
-        <img src={image} alt="Shoes" />
+      <figure className="max-w-[370px] max-h-[247px]">
+        <img  src={image} alt={name} />
       </figure>
       <p className="absolute right-0 mr-4 mt-4 px-3 py-[1px] bg-slate-900 text-white">
         ${price}
