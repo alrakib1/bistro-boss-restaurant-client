@@ -8,6 +8,7 @@ import {
 } from "react-simple-captcha";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Providers/AuthProvider";
+import SharedLogin from "../../components/SharedLogin/SharedLogin";
 
 
 const Login = () => {
@@ -132,6 +133,10 @@ const Login = () => {
                 />
               </div>
             </form>
+            <div className="text-center">
+            <div className="divider w-1/2 mx-auto pb-2">or Login with</div>
+              <SharedLogin></SharedLogin>
+            </div>
             <p className="text-center pb-4">
               New here ?
               <Link className="text-orange-600 font-semibold" to="/signup">

@@ -4,11 +4,15 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../Providers/AuthProvider";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SharedLogin from "../../components/SharedLogin/SharedLogin";
 
 const SignUp = () => {
   const { createUser, updateUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
+
+  const axiosPublic = useAxiosPublic();
 
   const {
     register,
@@ -25,16 +29,28 @@ const SignUp = () => {
         // console.log(loggedUser);
         updateUser(data.name, data.photURL)
           .then(() => {
-            Swal.fire({
-              position: "top-center",
-              icon: "success",
-              title: "Signup Successful",
-              showConfirmButton: false,
-              timer: 1500,
+            // create user entry in the database
+
+            const userInfo = {
+              name: data.name,
+              email: data.email,
+            };
+
+            axiosPublic.post("/users", userInfo).then((res) => {
+              // console.log(res.data)
+              if (res.data.insertedId) {
+                Swal.fire({
+                  position: "top-center",
+                  icon: "success",
+                  title: "Signup Successful",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                reset();
+                // if user is not updating properly then use log out instead of navigate
+                navigate("/");
+              }
             });
-            reset();
-            // if user is not updating properly then use log out instead of navigate
-            navigate('/');
           })
           .catch((error) => {
             console.log(error);
@@ -146,6 +162,10 @@ const SignUp = () => {
                 />
               </div>
             </form>
+            <p className="text-center">
+            <div className="divider w-1/2 mx-auto pb-2">or Signup with</div>
+              <SharedLogin></SharedLogin>
+            </p>
             <p className="text-center pb-4">
               {" "}
               Already Have an account ?
