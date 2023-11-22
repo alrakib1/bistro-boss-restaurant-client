@@ -13,6 +13,8 @@ import PrivateRoute from "./PrivateRoute";
 
 import AddItems from "../pages/DashBoard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
+import ManageItems from "../pages/DashBoard/Manage items/ManageItems";
+import UpdateItem from "../pages/DashBoard/Update Items/UpdateItem";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,22 @@ const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AddItems></AddItems>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manageItems",
+        element: (
+          <AdminRoute>
+            <ManageItems></ManageItems>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "updateItem/:id",
+        element: (
+          <AdminRoute>
+            <UpdateItem></UpdateItem>
           </AdminRoute>
         ),
       },
