@@ -1,12 +1,13 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useCart from "../../../hooks/useCart";
-import useAuth from "../../../hooks/useAuth";
-
 
 const CheckoutFrom = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const stripe = useStripe();
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState("");
@@ -14,22 +15,20 @@ const CheckoutFrom = () => {
   const axiosSecure = useAxiosSecure();
   const [cart, refetch] = useCart();
 
-const [transaction,setTransaction] = useState();
+  const [transaction, setTransaction] = useState();
+  const navigate = useNavigate();
 
-
-const totalPrice = cart
-    .reduce((total, item) => total + item.price, 0);
-
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
   useEffect(() => {
-  if(totalPrice > 0){
-    axiosSecure
-    .post("/create-payment-intent", { price: totalPrice })
-    .then((res) => {
-      console.log(res.data.clientSecret);
-      setClientSecret(res.data.clientSecret);
-    });
-  }
+    if (totalPrice > 0) {
+      axiosSecure
+        .post("/create-payment-intent", { price: totalPrice })
+        .then((res) => {
+          console.log(res.data.clientSecret);
+          setClientSecret(res.data.clientSecret);
+        });
+    }
   }, [axiosSecure, totalPrice]);
 
   const handleSubmit = async (event) => {
@@ -58,42 +57,54 @@ const totalPrice = cart
       console.log("[PaymentMethod]", paymentMethod);
     }
 
-    // confirm payment 
-    const {paymentIntent,error:confirmError} = await stripe.confirmCardPayment(clientSecret,{
-      payment_method:{
-        card: card,
-        billing_details:{
-          email: user?.email || 'anonymous',
-          name: user?.displayName || 'anonymous'
+    // confirm payment
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: card,
+          billing_details: {
+            email: user?.email || "anonymous",
+            name: user?.displayName || "anonymous",
+          },
+        },
+      });
+    if (confirmError) {
+      console.log(confirmError, "confirm error");
+    } else {
+      console.log(paymentIntent, "payment intent");
+      if (paymentIntent.status === "succeeded") {
+        console.log("transaction id", paymentIntent.id);
+        setTransaction(paymentMethod.id);
+
+        //  now save the payment in the database
+        const payment = {
+          email: user.email,
+          transactionId: paymentIntent.id,
+          price: totalPrice,
+          date: new Date(), // utc date convert. use moment js to
+          cartId: cart.map((item) => item._id),
+          menuItemId: cart.map((item) => item.menuId),
+          status: "pending",
+        };
+
+        const res = await axiosSecure.post("/payments", payment);
+        console.log("payment saved", res.data);
+        refetch();
+        if (res.data.paymentResult.insertedId) {
+          //
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Payment successful",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setTimeout(() => {
+            navigate("/dashboard/paymentHistory");
+          }, 2000);
         }
       }
-    })
-    if(confirmError){
-      console.log(confirmError, 'confirm error')
     }
-   else{
-    console.log(paymentIntent , 'payment intent')
-    if(paymentIntent.status === 'succeeded'){
-      console.log('transaction id', paymentIntent.id)
-      setTransaction(paymentMethod.id)
-
-      //  now save the payment in the database
-      const payment = {
-        email : user.email,
-        transactionId: paymentIntent.id,
-        price: totalPrice,
-        date : new Date(), // utc date convert. use moment js to  
-        cartId: cart.map(item=>item._id),
-        menuItemId : cart.map(item=>item.menuId),
-        status: 'pending'
-      }
-
-   const res = await axiosSecure.post('/payments',payment);
-   console.log('payment saved',res.data)
-   refetch();
-
-    }
-   }
   };
 
   return (
@@ -122,9 +133,11 @@ const totalPrice = cart
         Pay
       </button>
       {error && <p className="text-red-400">{error}</p>}
-      {
-       transaction && <p className="text-green-600">Transaction Successful. Transaction id: {transaction}</p>
-      }
+      {transaction && (
+        <p className="text-green-600">
+          Transaction Successful. Transaction id: {transaction}
+        </p>
+      )}
     </form>
   );
 };
