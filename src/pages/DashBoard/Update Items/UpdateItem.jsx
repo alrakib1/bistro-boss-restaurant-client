@@ -4,20 +4,21 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
 const UpdateItem = () => {
   const params = useParams();
+  const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
   // console.log(params)
 
   const { data: item = [], refetch } = useQuery({
     queryKey: ["item"],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/menu/${params.id}`);
+      const res = await axiosPublic.get(`/menu/${params.id}`);
       return res.data;
     },
   });
-
-  const axiosSecure = useAxiosSecure();
 
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
