@@ -1,13 +1,15 @@
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../../Providers/AuthProvider";
 import "./Navbar.css";
 
 import { FaShoppingCart } from "react-icons/fa";
 import useCart from "../../../hooks/useCart";
+import useAdmin from "../../../hooks/useAdmin";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const [isAdmin] = useAdmin();
   const [cart] = useCart();
 
   const navOptions = (
@@ -21,6 +23,14 @@ const Navbar = () => {
       <li>
         <NavLink to="/order/salad">Order Food</NavLink>
       </li>
+      {
+       user && isAdmin && <li><Link to='/dashboard/adminHome'>Dashboard</Link></li>
+
+      }
+      {
+       user && !isAdmin && <li><Link to='/dashboard/userHome'>Dashboard</Link></li>
+
+      }
       <li>
         <NavLink to="/dashboard/cart">
           <div className="flex gap-2 justify-center items-center  ">
