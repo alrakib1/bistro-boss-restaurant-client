@@ -5,24 +5,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import { Rating } from "@smastrom/react-rating";
 
+import { useQuery } from "@tanstack/react-query";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
 import { Autoplay, Navigation } from "swiper/modules";
-import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../../hooks/useAxiosPublic";
 const Testimonials = () => {
-const axiosPublic = useAxiosPublic();
+  const axiosPublic = useAxiosPublic();
 
-
-  const {data:reviews=[]} = useQuery({
-    queryKey:['reviews'],
-    queryFn: async()=>{
-    const res= await  axiosPublic.get('http://localhost:5000/reviews');
-    return res.data;
-    }
-  })
-
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["reviews"],
+    queryFn: async () => {
+      const res = await axiosPublic.get(
+        "https://bistro-boss-resturant-server-chi.vercel.app/reviews"
+      );
+      return res.data;
+    },
+  });
 
   return (
     <section className="my-20">
