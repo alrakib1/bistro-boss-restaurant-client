@@ -18,7 +18,7 @@ const Testimonials = () => {
     queryKey: ["reviews"],
     queryFn: async () => {
       const res = await axiosPublic.get(
-        "https://bistro-boss-resturant-server-chi.vercel.app/reviews"
+        "http://localhost:5000/reviews"
       );
       return res.data;
     },

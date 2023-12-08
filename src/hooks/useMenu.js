@@ -12,9 +12,7 @@ const useMenu = () => {
   } = useQuery({
     queryKey: ["menu"],
     queryFn: async () => {
-      const res = await axiosPublic.get(
-        "https://bistro-boss-resturant-server-chi.vercel.app/menu"
-      );
+      const res = await axiosPublic.get("http://localhost:5000/menu");
       return res.data;
     },
   });
